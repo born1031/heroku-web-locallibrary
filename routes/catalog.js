@@ -7,13 +7,12 @@ var author_controller = require('../controllers/authorController');
 var genre_controller = require('../controllers/genreController');
 var bookinstance_controller = require('../controllers/bookinstanceController');
 
-// GET catalog home page.
-router.get('/', function(req, res, next){
-	res.send('NOT IMPLEMENTED: Site Home Page.');
-});
-
 
 /// BOOK ROUTES ///
+
+// GET catalog home page.
+// This actually maps to /catalog/ because we import the route with a /catalog prefix
+router.get('/', book_controller.index);
 
 // GET request for creating a Book. NOTE This must come before routes that display Book (uses id).
 router.get('/book/create', book_controller.book_create_get);
