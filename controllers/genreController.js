@@ -85,7 +85,7 @@ exports.genre_create_post = [
 					genre.save(function(err){
 						if(err){return next(err);}
 
-						// Genre saved. Redirect to genre detail page.
+						// Genre saved. Redirect to the genre detail page.
 						res.redirect(genre.url);
 					});
 				};
