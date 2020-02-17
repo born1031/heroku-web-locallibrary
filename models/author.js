@@ -42,9 +42,9 @@ AuthorSchema.virtual('life_span').get(function(){
 	if(this.date_of_birth && this.date_of_death){
 		life_time = moment(this.date_of_birth).format('MMMM Do, YYYY') + ' - ' + moment(this.date_of_death).format('MMMM Do, YYYY');
 	}else if(this.date_of_birth){
-		life_time = moment(this.date_of_birth).format('MMMM Do, YYYY');
+		life_time = moment(this.date_of_birth).format('MMMM Do, YYYY') + ' - Now.';
 	}else if(this.date_of_death){
-		life_time = moment(this.date_of_death).format('MMMM Do, YYYY');
+		life_time = 'Unknow - ' + moment(this.date_of_death).format('MMMM Do, YYYY');
 	};
 	return life_time;
 });
