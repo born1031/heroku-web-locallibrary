@@ -15,7 +15,7 @@ block content
 				else
 					span.text-warning #{item.status}
 	
-				if item != 'Available'
+				if item.status != 'Available'
 					span  ( Due : #{item.due_back_formatted} )
 		else
 			li
