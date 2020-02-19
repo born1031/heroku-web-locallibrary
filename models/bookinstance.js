@@ -8,7 +8,7 @@ var BookInstanceSchema = new Schema(
 		// reference to the associated book.
 		book: {type: Schema.Types.ObjectId, ref: 'Book', required: true},
 		imprint: {type: String, required: true},
-		status: {type: String, required: true, enum: ['Available', 'Maintenance', 'Reserved'], default: 'Maintenance'},
+		status: {type: String, required: true, enum: ['Available', 'Maintenance', 'Loaned', 'Reserved'], default: 'Maintenance'},
 		due_back: {type: Date, default: Date.now}
 	}
 );
@@ -16,6 +16,17 @@ var BookInstanceSchema = new Schema(
 // Virtual for bookinstance's URL
 BookInstanceSchema.virtual('url').get(function(){
 	return '/catalog/bookinstance/' + this._id;
+});
+
+// Get list of status.
+BookInstanceSchema.virtual('list_of_status').get(function(){
+	var list_of_status = [
+		'Maintenance',
+		'Available',
+		'Loaned',
+		'Reserved'
+	];
+	return list_of_status;
 });
 
 // Get formated date.
