@@ -49,8 +49,8 @@ exports.bookinstance_create_post = [
 	
 	// Validate fields.
 	body('book', 'Book must be specified.').trim().isLength({ min: 1 }),
-	body('imprint', 'Imprint must be specified').trim().isLength({ min: 1 }),
-	body('due_back', 'Invalid date').optional({ checkFalsy: true }).isISO8601(),
+	body('imprint', 'Imprint must be specified.').trim().isLength({ min: 1 }),
+	body('due_back', 'Invalid date.').optional({ checkFalsy: true }).isISO8601(),
 
 	// Sanitize fields.
 	sanitizeBody('book').escape(),
@@ -73,13 +73,30 @@ exports.bookinstance_create_post = [
 			due_back: req.body.due_back
 		});
 
+		if(bookinstance.status.toString() != 'Available' && bookinstance.due_back == null){
+			Book.find({}, 'title').exec(function(err, list_books){
+				if(err){return next(err);}
+
+				var error = {
+					msg: 'When the staus is not "Available", the date when book available must be choosed.'
+				};
+
+				var errorsArr = errors.array();
+				errorsArr.push(error);
+
+				// Successful, so render.
+				res.render('bookinstance_form', {title: 'Create BookInstance', book_list: list_books, selected_book: bookinstance.book._id, errors: errorsArr, bookinstance: bookinstance});
+			});
+			return;
+		};
+
 		if(!errors.isEmpty()){
 			// There are errors. Render form again with sanitized values and error messages.
 			Book.find({}, 'title').exec(function(err, list_books){
 				if(err){return next(err);}
 
 				// Successful, so render.
-				res.render('bookinstance_form', {title: 'Create BookInstance', book_list: list_books, selected_book: bookinstance.book._id, errors: error.array(), bookinstance: bookinstance});
+				res.render('bookinstance_form', {title: 'Create BookInstance', book_list: list_books, selected_book: bookinstance.book._id, errors: errors.array(), bookinstance: bookinstance});
 			});
 			return;
 		}else{
