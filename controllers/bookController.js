@@ -203,7 +203,7 @@ exports.book_delete_post = function(req, res, next){
 			return;
 		}else{
 			// Book has no bookinstances. Delete object and redirect to the list of books.
-			Book.findByIdAndRemove(req.body.book_id, function deleteBook(){
+			Book.findByIdAndRemove(req.body.book_id, function deleteBook(err){
 				if(err){return next(err);}
 
 				// Success - go to book list.
