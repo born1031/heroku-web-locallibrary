@@ -325,7 +325,7 @@ exports.book_update_post = [
 			Book.findByIdAndUpdate(req.params.id, book, {}, function(err, thebook){
 				if(err){return next(err);}
 
-				// Successful - redirect to book detail page.
+				// Successful - redirect to the book detail page.
 				res.redirect(thebook.url);
 			});
 		};
