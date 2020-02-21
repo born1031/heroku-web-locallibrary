@@ -63,6 +63,7 @@ exports.bookinstance_create_post = [
 
 		// Extract the validation errors from a request.
 		const errors = validationResult(req);
+		var errArray = errors.array();
 
 		// Create a BookInstance object with escaped and trimmed data.
 		var bookinstance = new BookInstance(
@@ -74,29 +75,26 @@ exports.bookinstance_create_post = [
 		});
 
 		if(bookinstance.status.toString() != 'Available' && bookinstance.due_back == null){
-			Book.find({}, 'title').exec(function(err, list_books){
-				if(err){return next(err);}
+			
+			var error = {
+				msg: 'When the staus is not "Available", the "Date when book available" must be choosed.'
+			};
+			errArray.push(error);
+		}else if(bookinstance.status.toString() == 'Available' && bookinstance.due_back != null){
 
-				var error = {
-					msg: 'When the staus is not "Available", the date when book available must be choosed.'
-				};
-
-				var errorsArr = errors.array();
-				errorsArr.push(error);
-
-				// Successful, so render.
-				res.render('bookinstance_form', {title: 'Create BookInstance', book_list: list_books, selected_book: bookinstance.book._id, errors: errorsArr, bookinstance: bookinstance});
-			});
-			return;
+			var error = {
+				msg: 'When the staus is "Available", the "Date when book available" must not be choosed.'
+			};
+			errArray.push(error);
 		};
 
-		if(!errors.isEmpty()){
+		if(errArray.length > 0){
 			// There are errors. Render form again with sanitized values and error messages.
 			Book.find({}, 'title').exec(function(err, list_books){
 				if(err){return next(err);}
 
 				// Successful, so render.
-				res.render('bookinstance_form', {title: 'Create BookInstance', book_list: list_books, selected_book: bookinstance.book._id, errors: errors.array(), bookinstance: bookinstance});
+				res.render('bookinstance_form', {title: 'Create BookInstance', book_list: list_books, selected_book: bookinstance.book._id, errors: errArray, bookinstance: bookinstance});
 			});
 			return;
 		}else{
@@ -181,6 +179,7 @@ exports.bookinstance_update_post = [
 
 		// Extract the validation from a request.
 		const errors = validationResult(req);
+		var errArray = errors.array();
 
 		// Create BookInstance object with escaped/trimmed data and old id.
 		var bookinstance = new BookInstance(
@@ -192,14 +191,28 @@ exports.bookinstance_update_post = [
 			_id: req.params.id
 		});
 
-		if(!errors.isEmpty()){
+		if(bookinstance.status.toString() != 'Available' && bookinstance.due_back == null){
+			
+			var error = {
+				msg: 'When the staus is not "Available", the "Date when book available" must be choosed.'
+			};
+			errArray.push(error);
+		}else if(bookinstance.status.toString() == 'Available' && bookinstance.due_back != null){
+
+			var error = {
+				msg: 'When the staus is "Available", the "Date when book available" must not be choosed.'
+			};
+			errArray.push(error);
+		};
+
+		if(errArray.length > 0){
 			// There are errors. Render form again with sanitized values/error messages.
 
 			Book.find({}, 'title').exec(function(err, theBooks){
 				if(err){return next(err);}
 
 				// Successful, so render.
-				res.render('bookinstance_form', {title: 'Update BookInstance', book_list: theBooks, bookinstance: bookinstance});
+				res.render('bookinstance_form', {title: 'Update BookInstance', book_list: theBooks, bookinstance: bookinstance, errors: errArray});
 			});
 			return;
 		}else{
