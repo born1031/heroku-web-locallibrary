@@ -34,6 +34,26 @@ AuthorSchema.virtual('url').get(function(){
 	return '/catalog/author/' + this._id;
 });
 
+// Get author's date of birth for form.
+AuthorSchema.virtual('date_of_birth_for_form').get(function(){
+	var date = null;
+
+	if(this.date_of_birth != null){
+		date = moment(this.date_of_birth).format('YYYY-MM-DD');
+	};
+	return date;
+});
+
+// Get author's date of death for form.
+AuthorSchema.virtual('date_of_death_for_form').get(function(){
+	var date = null;
+
+	if(this.date_of_death != null){
+		date = moment(this.date_of_death).format('YYYY-MM-DD');
+	};
+	return date;
+});
+
 // Get author's life span time.
 AuthorSchema.virtual('life_span').get(function(){
 	
